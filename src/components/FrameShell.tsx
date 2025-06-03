@@ -85,8 +85,8 @@ export const FrameShell: React.FC = () => {
   return (
     <div className={styles.frameContainer}>
       <header className={styles.header}>
-        <div className={styles.brand}>Dimension 0: A Ride Through Information Park</div>
-        <button className={styles.settingsButton} onClick={() => setIsTOCVisible(true)}>🗺️</button>
+        <div className={styles.brand}>Dimension 0: A Stroll Through Information Park</div>
+        <button className={styles.settingsButton} onClick={() => setIsTOCVisible(true)}>MAP</button>
       </header>
       <main className={styles.mainContent}>
         <div className={styles.webviewContainer}>

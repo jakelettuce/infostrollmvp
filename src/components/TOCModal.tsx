@@ -20,28 +20,28 @@ export const TOCModal: React.FC<TOCModalProps> = ({
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.closeButton} onClick={onClose}>
-          ×
-        </button>
-        <ul className={styles.siteList}>
-          {sites.map((site, idx) => (
-            <li
-              key={site.url}
-              className={`${styles.siteItem} ${
-                idx === currentIndex ? styles.current : ''
-              } ${!site.unlocked ? styles.locked : ''}`}
-              onClick={() => {
-                if (site.unlocked) {
-                  onSelect(idx);
-                  onClose();
-                }
-              }}
-            >
-              {site.name}
-            </li>
-          ))}
-        </ul>
+      <div className={styles.modalStack}>
+        <div className={styles.modalTitle}>Map</div>
+        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <ul className={styles.siteList}>
+            {sites.map((site, idx) => (
+              <li
+                key={site.url}
+                className={`${styles.siteItem} ${
+                  idx === currentIndex ? styles.current : ''
+                } ${!site.unlocked ? styles.locked : ''}`}
+                onClick={() => {
+                  if (site.unlocked) {
+                    onSelect(idx);
+                    onClose();
+                  }
+                }}
+              >
+                {site.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
