@@ -11,7 +11,11 @@ declare global {
   }
 }
 
-export const FrameShell: React.FC = () => {
+interface FrameShellProps {
+  onLeave: () => void;
+}
+
+export const FrameShell: React.FC<FrameShellProps> = ({ onLeave }) => {
   const webviewRef = useRef<Electron.WebviewTag>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [siteList, setSiteList] = useState<SiteConfig[]>(sites);
@@ -85,6 +89,7 @@ export const FrameShell: React.FC = () => {
   return (
     <div className={styles.frameContainer}>
       <header className={styles.header}>
+        <button className={styles.leaveButton} onClick={onLeave}>Leave</button>
         <div className={styles.brand}>Dimension 0: A Stroll Through Information Park</div>
         <button className={styles.settingsButton} onClick={() => setIsTOCVisible(true)}>MAP</button>
       </header>

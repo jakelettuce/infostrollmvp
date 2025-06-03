@@ -141,4 +141,29 @@
   background: #333333;
   border-radius: 0;
   margin: 0 1rem;
+}
+
+.leaveButton {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  z-index: 2;
+  padding: 0.5rem 1rem;
+  border-radius: 0;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 500;
+}
+
+.leaveButton:hover {
+  background: #ffffff;
+  color: #000000;
 } 
