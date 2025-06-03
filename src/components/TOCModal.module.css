@@ -1,0 +1,67 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 2rem;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.closeButton:hover {
+  opacity: 0.8;
+}
+
+.siteList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.siteItem {
+  padding: 0.75rem 1rem;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.siteItem:hover:not(.locked) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.siteItem.current {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.siteItem.locked {
+  color: #666;
+  cursor: not-allowed;
+} 

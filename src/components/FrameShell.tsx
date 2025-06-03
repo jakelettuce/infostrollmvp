@@ -3,6 +3,7 @@ import styles from './FrameShell.module.css';
 import { sites, SiteConfig } from '../config/sites';
 import { Timeline } from './Timeline';
 import { TransitionOverlay } from './TransitionOverlay';
+import { TOCModal } from './TOCModal';
 
 declare global {
   namespace Electron {
@@ -16,6 +17,7 @@ export const FrameShell: React.FC = () => {
   const [siteList, setSiteList] = useState<SiteConfig[]>(sites);
   const [visitedSites, setVisitedSites] = useState<Set<number>>(new Set([0]));
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isTOCVisible, setIsTOCVisible] = useState(false);
   const nextIndexRef = useRef<() => void>();
 
   useEffect(() => {
@@ -83,24 +85,26 @@ export const FrameShell: React.FC = () => {
   return (
     <div className={styles.frameContainer}>
       <header className={styles.header}>
-        <div className={styles.brand}>Dimension 0: A Stroll Through Information Park</div>
-        <button className={styles.settingsButton}>⚙️</button>
+        <div className={styles.brand}>Dimension 0: A Ride Through Information Park</div>
+        <button className={styles.settingsButton} onClick={() => setIsTOCVisible(true)}>🗺️</button>
       </header>
       <main className={styles.mainContent}>
-        <TransitionOverlay 
-          active={isTransitioning} 
-          onAnimationEnd={() => {
-            nextIndexRef.current?.();
-          }} 
-        />
-        <webview
-          ref={webviewRef}
-          id="mainWebview"
-          src={siteList[currentIndex].url}
-          style={{ width: '100%', height: '100%' }}
-          partition="persist:infoStroll"
-          webpreferences="nodeIntegration=false, contextIsolation=true"
-        />
+        <div className={styles.webviewContainer}>
+          <TransitionOverlay 
+            active={isTransitioning} 
+            onAnimationEnd={() => {
+              nextIndexRef.current?.();
+            }} 
+          />
+          <webview
+            ref={webviewRef}
+            id="mainWebview"
+            src={siteList[currentIndex].url}
+            style={{ width: '100%', height: '100%' }}
+            partition="persist:infoStroll"
+            webpreferences="nodeIntegration=false, contextIsolation=true"
+          />
+        </div>
       </main>
       <footer className={styles.footer}>
         <button
@@ -108,22 +112,32 @@ export const FrameShell: React.FC = () => {
           onClick={handleBack}
           disabled={currentIndex === 0}
         >
-          ◀
+          Uptown
         </button>
-        <Timeline
-          sites={siteList}
-          currentIndex={currentIndex}
-          visitedSites={visitedSites}
-          onSelect={(i) => navigateTo(i)}
-        />
+        <div className={styles.siteInfo}>
+          <div className={styles.currentSite}>{siteList[currentIndex].name}</div>
+          <Timeline
+            sites={siteList}
+            currentIndex={currentIndex}
+            visitedSites={visitedSites}
+            onSelect={(i) => navigateTo(i)}
+          />
+        </div>
         <button
           className={styles.navButton}
           onClick={handleNext}
           disabled={currentIndex === siteList.length - 1 || !siteList[currentIndex + 1]?.unlocked}
         >
-          ▶
+          Downtown
         </button>
       </footer>
+      <TOCModal
+        sites={siteList}
+        currentIndex={currentIndex}
+        visible={isTOCVisible}
+        onClose={() => setIsTOCVisible(false)}
+        onSelect={(i) => navigateTo(i)}
+      />
     </div>
   );
 }; 
