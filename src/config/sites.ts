@@ -5,9 +5,10 @@ export interface SiteConfig {
 }
 
 export const sites: SiteConfig[] = [
-  { name: 'Google', url: 'https://www.google.com', unlocked: true },
-  { name: 'Wikipedia', url: 'https://en.wikipedia.org', unlocked: false },
-  { name: 'BBC News', url: 'https://www.bbc.com/news', unlocked: false },
-  { name: 'National Geographic', url: 'https://www.nationalgeographic.com', unlocked: false },
-  { name: 'Smithsonian', url: 'https://www.si.edu', unlocked: false }
-]; 
+  { name: 'Way to Go', url: 'http://a-way-to-go.com/', unlocked: false },
+  { name: 'Patatap', url: 'https://patatap.com/', unlocked: true },
+  { name: 'Stimulation Clicker', url: 'https://neal.fun/stimulation-clicker', unlocked: false },
+  { name: 'Superbad', url: 'https://www.superbad.com/', unlocked: false },
+  { name: 'WNDR', url: 'https://www.sandrinewij.be/WNDR/', unlocked: false },
+  { name: 'ECSpace', url: 'https://www.erdong-chen.com/', unlocked: false },
+];

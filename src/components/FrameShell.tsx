@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import styles from './FrameShell.module.css';
 import { sites, SiteConfig } from '../config/sites';
 import { Timeline } from './Timeline';
+import { TransitionOverlay } from './TransitionOverlay';
 
 declare global {
   namespace Electron {
@@ -14,6 +15,31 @@ export const FrameShell: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [siteList, setSiteList] = useState<SiteConfig[]>(sites);
   const [visitedSites, setVisitedSites] = useState<Set<number>>(new Set([0]));
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const nextIndexRef = useRef<() => void>();
+
+  useEffect(() => {
+    const webview = webviewRef.current;
+    if (webview) {
+      const handleLoad = () => {
+        if (isTransitioning) {
+          setIsTransitioning(false);
+        }
+      };
+      const handleError = (event: any) => {
+        // Ignore ERR_ABORTED errors as they're expected during transitions
+        if (event.errorCode !== -3) {
+          console.error('Webview error:', event);
+        }
+      };
+      webview.addEventListener('did-finish-load', handleLoad);
+      webview.addEventListener('did-fail-load', handleError);
+      return () => {
+        webview.removeEventListener('did-finish-load', handleLoad);
+        webview.removeEventListener('did-fail-load', handleError);
+      };
+    }
+  }, [isTransitioning]);
 
   // Unlock the next site when visiting a new site
   useEffect(() => {
@@ -27,15 +53,30 @@ export const FrameShell: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
+  const navigateTo = (newIndex: number) => {
+    setIsTransitioning(true);
+    const delayed = () => {
+      setCurrentIndex(newIndex);
+      webviewRef.current?.loadURL(siteList[newIndex].url);
+    };
+    nextIndexRef.current = delayed;
+  };
+
+  const handleWebviewLoad = () => {
+    if (isTransitioning) {
+      setIsTransitioning(false);
+    }
+  };
+
   const handleNext = () => {
     if (currentIndex < siteList.length - 1 && siteList[currentIndex + 1].unlocked) {
-      setCurrentIndex(currentIndex + 1);
+      navigateTo(currentIndex + 1);
     }
   };
 
   const handleBack = () => {
     if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
+      navigateTo(currentIndex - 1);
     }
   };
 
@@ -46,6 +87,12 @@ export const FrameShell: React.FC = () => {
         <button className={styles.settingsButton}>⚙️</button>
       </header>
       <main className={styles.mainContent}>
+        <TransitionOverlay 
+          active={isTransitioning} 
+          onAnimationEnd={() => {
+            nextIndexRef.current?.();
+          }} 
+        />
         <webview
           ref={webviewRef}
           id="mainWebview"
@@ -67,10 +114,7 @@ export const FrameShell: React.FC = () => {
           sites={siteList}
           currentIndex={currentIndex}
           visitedSites={visitedSites}
-          onSelect={(i) => {
-            setCurrentIndex(i);
-            webviewRef.current?.loadURL(siteList[i].url);
-          }}
+          onSelect={(i) => navigateTo(i)}
         />
         <button
           className={styles.navButton}
